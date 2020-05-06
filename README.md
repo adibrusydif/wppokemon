@@ -1,6 +1,6 @@
 <div align="center">
-    <img src="App/images/sc1.jpeg" alt="Logo" width="40%">
-    <img src="App/images/sc2.jpeg" alt="Logo" width="40%">
+    <img src="App/images/sc1.png" alt="Logo" width="40%">
+    <img src="App/images/sc2.png" alt="Logo" width="40%">
 </div>
 
 # WPPokemon Dex
@@ -14,4 +14,4 @@ The data provided by [https://graphql-pokemon.now.sh/](https://graphql-pokemon.n
 - Show the detail information about pokemon selected
 
 ## APK Release
-You can download apk on this link [WPPokemon APPS](https://drive.google.com/open?id=14aXCNxtCuBbUBSYoLqsTy8ArRFlttCHx)
+You can download apk on this link [WPPokemon APPS](https://drive.google.com/open?id=1k0IXDGN0lrSFumi-fWiUMR6mUYqs_88d)

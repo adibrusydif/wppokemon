@@ -44,7 +44,7 @@ function Detail({route, navigation}) {
         </View>
       )}
 
-      {pokemonExists && (
+      {pokemonExists && !loading ? (
         <>
           <View style={styles.wrapperHeader}>
             <Text style={styles.titleHome}>{data.pokemon.name}</Text>
@@ -131,7 +131,7 @@ function Detail({route, navigation}) {
             </View>
           </View>
         </>
-      )}
+      ) : null}
     </ScrollView>
   );
 }
