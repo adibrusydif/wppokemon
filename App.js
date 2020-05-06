@@ -22,7 +22,11 @@ const App = () => (
           component={HomeScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen
+          name="Detail"
+          component={DetailScreen}
+          options={{headerTransparent: true, title: ''}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   </ApolloProvider>
