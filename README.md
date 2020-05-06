@@ -1,6 +1,6 @@
 <div align="center">
-    <img src="App/images/sc1.png" alt="Logo" width="40%">
-    <img src="App/images/sc2.png" alt="Logo" width="40%">
+    <img src="images/sc1.png" alt="Logo" width="40%">
+    <img src="images/sc2.png" alt="Logo" width="40%">
 </div>
 
 # WPPokemon Dex
