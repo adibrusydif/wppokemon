@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './screen/Home';
 import DetailScreen from './screen/Detail';
+import FilterScreen from './screen/Filter';
 
 // Create the client as outlined in the setup guide
 const client = new ApolloClient({
@@ -27,6 +28,7 @@ const App = () => (
           component={DetailScreen}
           options={{headerTransparent: true, title: ''}}
         />
+        <Stack.Screen name="Filter" component={FilterScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   </ApolloProvider>

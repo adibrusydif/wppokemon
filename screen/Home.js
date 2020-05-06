@@ -14,36 +14,63 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Dimensions,
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 import {useQuery} from '@apollo/react-hooks';
 import POKEMONS from '../gql/pokemons';
-const {width, height} = Dimensions.get('window');
-const screen_width = width < height ? width : height;
-const screen_height = width < height ? height : width;
+import {
+  Badge,
+  getColor,
+  screen_width,
+  dynamicTypeFilter,
+} from '../utils/common';
 
 function Home(props) {
   const [variables, setVariables] = React.useState({first: 20});
+  const [filterState, setFilterState] = React.useState('All');
   const {loading, error, data, fetchMore} = useQuery(POKEMONS, {
     variables,
   });
   const {navigate} = props.navigation;
-
   const pokemonExists = data && data.pokemons;
+
+  const loadMore = () => {
+    fetchMore({
+      variables: {...variables, first: variables.first + 6},
+      updateQuery: (prev, {fetchMoreResult, variables}) => {
+        setVariables(variables);
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          pokemons: [...fetchMoreResult.pokemons],
+        });
+      },
+    });
+  };
+
+  const datafilter = param => {
+    if (filterState && filterState !== 'All') {
+      const filterItem = data.pokemons.filter(item =>
+        item.types.includes(filterState),
+      );
+      return filterItem;
+    } else {
+      return param;
+    }
+  };
 
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
-        style={styles.card}
+        style={[styles.card, {borderColor: getColor(item.types)}]}
         onPress={() => navigate('Detail', {id: item.id, name: item.name})}>
         <View>
           <Text style={styles.pokemonName}>{item.name}</Text>
-          {item.types.map((type, index) => (
-            <Text style={styles.badgeType}>{type}</Text>
-          ))}
+          <Badge
+            data={item.types}
+            TxtColor={'#ffffff'}
+            BGcolor={getColor(item.types)}
+          />
         </View>
         <Image
           style={styles.imageCharacter}
@@ -55,22 +82,50 @@ function Home(props) {
     );
   };
 
+  const datawrap = pokemonExists ? datafilter(data.pokemons) : [];
+
   return (
     <View style={styles.wrapper}>
-      <View style={styles.wrapperTitle}>
-        <Text style={styles.titleHome}>Pokedex</Text>
-      </View>
-      <FlatList
-        testID="FlatList"
-        contentContainerStyle={styles.flatlist}
-        showsHorizontalScrollIndicator={false}
-        data={pokemonExists ? data.pokemons : []}
-        renderItem={renderItem}
-        numColumns={2}
-      />
-      {loading && (
+      {!loading || pokemonExists ? (
         <View>
-          <Text>Loading ...</Text>
+          <View style={styles.wrapperTitle}>
+            <View>
+              <Text style={[styles.titleHome, {flex: 1}]}>Pokedex</Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() =>
+                navigate('Filter', {
+                  filterType: dynamicTypeFilter(data.pokemons),
+                  callback: x => setFilterState(x),
+                })
+              }>
+              <Text style={styles.titleFilter}>Filter : {filterState}</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            testID="FlatList"
+            contentContainerStyle={styles.flatlist}
+            showsHorizontalScrollIndicator={false}
+            data={datawrap}
+            renderItem={renderItem}
+            onEndReached={() => loadMore()}
+            onEndReachedThreshold={0.5}
+            numColumns={2}
+            keyExtractor={(item, index) => index}
+          />
+        </View>
+      ) : (
+        <View style={styles.center}>
+          <Image
+            style={styles.imageCharacter}
+            source={require('../images/Pokeball.png')}
+          />
+          {error ? (
+            <Text>Something error, please restart your apps</Text>
+          ) : (
+            <Text>Loading ...</Text>
+          )}
         </View>
       )}
     </View>
@@ -78,6 +133,11 @@ function Home(props) {
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   card: {
     borderWidth: 1,
     borderColor: '#34edac',
@@ -90,9 +150,24 @@ const styles = StyleSheet.create({
   },
   pokemonName: {fontWeight: 'bold', fontSize: 16},
   flatlist: {paddingHorizontal: 10},
-  wrapperTitle: {padding: 20},
-  wrapper: {backgroundColor: Colors.white, flex: 1},
+  wrapperTitle: {
+    padding: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  wrapper: {backgroundColor: '#ffffff', flex: 1},
   titleHome: {fontSize: 20, fontWeight: '700'},
+  titleFilter: {
+    fontSize: 16,
+    fontWeight: '500',
+    backgroundColor: '#d9dbde',
+    padding: 4,
+    borderRadius: 3,
+    shadowOffset: {width: 10, height: 10},
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   imageCharacter: {
     alignItems: 'flex-end',
     height: 80,
@@ -102,10 +177,12 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     fontSize: 10,
     backgroundColor: '#34edac',
-    color: Colors.white,
+    color: '#ffffff',
     padding: 4,
     borderRadius: 3,
     marginVertical: 3,
+    marginRight: 3,
+    alignSelf: 'flex-start',
   },
 });
 

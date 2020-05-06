@@ -1,10 +1,9 @@
 import React from 'react';
-import {StyleSheet, ScrollView, View, Text, Dimensions} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
+import {StyleSheet, View, Text, Dimensions} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
 export const screen_width = width < height ? width : height;
+export const screen_height = width < height ? height : width;
 
 export const getColor = arr => {
   if (arr.includes('Fire')) {
@@ -20,11 +19,19 @@ export const getColor = arr => {
   }
 };
 
+export const dynamicTypeFilter = arr => {
+  const temp = arr.map(item => item.types).flat();
+  let x = temp.filter((v, i) => temp.indexOf(v) === i);
+  const array = ['All'];
+  return array.concat(x);
+};
+
 export const Badge = ({data, BGcolor, TxtColor}) => {
   return (
-    <View style={{flexDirection: 'row'}}>
+    <View style={styles.row}>
       {data.map((type, index) => (
         <Text
+          key={index}
           style={[
             styles.badgeType,
             {backgroundColor: BGcolor, color: TxtColor},
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
   pokemonName: {fontWeight: 'bold', fontSize: 16},
   flatlist: {paddingHorizontal: 10},
   wrapperTitle: {padding: 20},
-  wrapper: {backgroundColor: Colors.white, flex: 1},
+  wrapper: {backgroundColor: '#ffffff', flex: 1},
   titleHome: {fontSize: 20, fontWeight: '700'},
   imageCharacter: {
     alignItems: 'flex-end',
@@ -61,11 +68,12 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     fontSize: 10,
     backgroundColor: '#34edac',
-    color: Colors.white,
+    color: '#ffffff',
     padding: 4,
     borderRadius: 3,
     marginVertical: 3,
     marginRight: 3,
     alignSelf: 'flex-start',
   },
+  row: {flexDirection: 'row'},
 });

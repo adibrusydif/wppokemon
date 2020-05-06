@@ -17,8 +17,7 @@ import {
 } from 'react-native';
 import {useQuery} from '@apollo/react-hooks';
 import POKEMON from '../gql/pokemon';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Badge, getColor, screen_width} from '../utils/component';
+import {Badge, getColor, screen_width, screen_height} from '../utils/common';
 
 function Detail({route, navigation}) {
   const {id, name} = route.params;
@@ -30,10 +29,24 @@ function Detail({route, navigation}) {
   const pokemonExists = data && data.pokemon;
 
   return (
-    <ScrollView style={{backgroundColor: Colors.white, flex: 1}}>
+    <ScrollView style={styles.scrollStyle}>
+      {loading && (
+        <View style={styles.center}>
+          <Image
+            style={styles.imageCharacterTile}
+            source={require('../images/Pokeball.png')}
+          />
+          {error ? (
+            <Text>Something error, please restart your apps</Text>
+          ) : (
+            <Text>Loading ...</Text>
+          )}
+        </View>
+      )}
+
       {pokemonExists && (
         <>
-          <View style={{flex: 1, padding: 20, marginTop: 40}}>
+          <View style={styles.wrapperHeader}>
             <Text style={styles.titleHome}>{data.pokemon.name}</Text>
             <Badge
               data={data.pokemon.types}
@@ -52,7 +65,7 @@ function Detail({route, navigation}) {
               styles.cardBottom,
               {borderColor: getColor(data.pokemon.types)},
             ]}>
-            <View style={{marginBottom: 10}}>
+            <View style={styles.margin10}>
               <Text style={styles.textkey}>Classification</Text>
               <Text style={styles.textValue}>
                 {data.pokemon.classification}
@@ -72,7 +85,7 @@ function Detail({route, navigation}) {
                 <Text style={styles.textValue}>{data.pokemon.fleeRate}</Text>
               </View>
             </View>
-            <View style={{marginBottom: 10}}>
+            <View style={styles.margin10}>
               <Text style={styles.textkey}>Resistance</Text>
               <Badge
                 data={data.pokemon.resistant}
@@ -80,7 +93,7 @@ function Detail({route, navigation}) {
                 BGcolor={'#7a786f'}
               />
             </View>
-            <View style={{marginBottom: 10}}>
+            <View style={styles.margin10}>
               <Text style={styles.textkey}>Weaknesses</Text>
               <Badge
                 data={data.pokemon.weaknesses}
@@ -89,7 +102,7 @@ function Detail({route, navigation}) {
               />
             </View>
             <Text style={styles.textkey}>Evolutions</Text>
-            <View style={{flexDirection: 'row'}}>
+            <View style={styles.row}>
               {data.pokemon.evolutions
                 ? data.pokemon.evolutions.map(item => (
                     <TouchableOpacity
@@ -118,20 +131,23 @@ function Detail({route, navigation}) {
           </View>
         </>
       )}
-      {loading && (
-        <View>
-          <Text>Loading ...</Text>
-        </View>
-      )}
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
+  margin10: {marginBottom: 10},
+  scrollStyle: {backgroundColor: '#ffffff', flex: 1},
+  wrapperHeader: {flex: 1, padding: 20, marginTop: 40},
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: screen_height / 2 - 40,
+  },
   badgeType: {
     fontWeight: '200',
     fontSize: 10,
     backgroundColor: '#34edac',
-    color: Colors.white,
+    color: '#ffffff',
     padding: 4,
     borderRadius: 3,
     marginVertical: 3,
@@ -183,35 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  row: {flexDirection: 'row'},
 });
 
 export default Detail;
