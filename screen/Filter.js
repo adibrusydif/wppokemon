@@ -12,7 +12,10 @@ function DynamicFilter({route, navigation}) {
   return (
     <View>
       {filterType.map((item, index) => (
-        <TouchableOpacity style={styles.item} onPress={() => onSelected(item)}>
+        <TouchableOpacity
+          key={index}
+          style={styles.item}
+          onPress={() => onSelected(item)}>
           <Text style={styles.textItem}>{item}</Text>
         </TouchableOpacity>
       ))}

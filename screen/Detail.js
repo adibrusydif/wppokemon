@@ -104,8 +104,9 @@ function Detail({route, navigation}) {
             <Text style={styles.textkey}>Evolutions</Text>
             <View style={styles.row}>
               {data.pokemon.evolutions
-                ? data.pokemon.evolutions.map(item => (
+                ? data.pokemon.evolutions.map((item, index) => (
                     <TouchableOpacity
+                      key={index}
                       style={[styles.card, {borderColor: getColor(item.types)}]}
                       onPress={() =>
                         navigate('Detail', {id: item.id, name: item.name})
